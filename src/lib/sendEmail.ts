@@ -5,7 +5,7 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY!;
 const FROM = process.env.RESEND_FROM!;
 
 export async function sendVerificationEmail(to: string, token: string) {
-  const verifyUrl = `${process.env.NGROK_URL}/api/auth/verify?token=${token}`;
+  const verifyUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify?token=${token}`;
   const body = {
     from: FROM,
     to,
