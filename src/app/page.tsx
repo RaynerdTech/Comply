@@ -13,7 +13,7 @@ export default function HomePage() {
       <Hero />
 
       {/* Payslip generator form */}
-      <section id="payslip-form" className="py-16 px-4 sm:px-8 mx-auto w-full ">
+      <section id="payslip-form" className="py-16 px-4 sm:px-8 mx-auto w-full  ">
         <PayslipForm />
       </section>
 

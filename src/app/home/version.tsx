@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Check, X, Crown, Zap, Palette, Signature, Image, Layers, Infinity, Star, ArrowUp } from 'lucide-react';
+import { Check, X, Crown, Zap, Palette, Signature, Image as ImageIcon, Layers, Infinity, Star, ArrowUp } from 'lucide-react';
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 export const VersionComparisonSection: React.FC = () => {
     const router = useRouter();
@@ -38,7 +39,7 @@ export const VersionComparisonSection: React.FC = () => {
   const freeFeatures = [
     { name: "Basic Salary Calculations", icon: Zap, available: true },
     { name: "Single Payslip Generation", icon: Layers, available: true },
-    { name: "Standard Templates", icon: Image, available: true },
+    { name: "Standard Templates", icon: ImageIcon, available: true },
     { name: "Basic PDF Export", icon: Check, available: true },
     { name: "Employee Information", icon: Check, available: true },
     { name: "Tax & Deduction Support", icon: Check, available: true },
@@ -47,7 +48,7 @@ export const VersionComparisonSection: React.FC = () => {
   const proFeatures = [
     { name: "Brand Color Customization", icon: Palette, available: true },
     { name: "Digital Signatures", icon: Signature, available: true },
-    { name: "Company Logo Integration", icon: Image, available: true },
+    { name: "Company Logo Integration", icon: ImageIcon, available: true },
     { name: "Multiple Payslip Generation", icon: Layers, available: true },
     { name: "Unlimited Payslip Creation", icon: Infinity, available: true },
     { name: "Priority Support", icon: Star, available: true },
@@ -118,11 +119,15 @@ export const VersionComparisonSection: React.FC = () => {
 
             {/* Image Container with Overlay */}
             <div className="relative mb-6 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/60 group">
-              <img 
-                src="/free.jpg" 
-                alt="Free Version Interface"
-                className="w-full h-72 sm:h-80 object-contain bg-white transition-transform duration-300"
-              />
+              <div className="w-full h-72 sm:h-80 bg-white relative">
+                <Image 
+                  src="/free.jpg" 
+                  alt="Free Version Interface"
+                  fill
+                  className="object-contain transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
               
               {/* Features Overlay - Animated from bottom */}
               <div className={`absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/40 transition-all duration-500 transform overflow-y-auto ${
@@ -224,11 +229,15 @@ export const VersionComparisonSection: React.FC = () => {
 
             {/* Image Container with Overlay */}
             <div className="relative mb-6 rounded-xl overflow-hidden border border-green-200/60 dark:border-green-700/60 group">
-              <img 
-                src="/pro version.jpg" 
-                alt="Pro Version Interface"
-                className="w-full h-72 sm:h-80 object-contain bg-white transition-transform duration-300"
-              />
+              <div className="w-full h-72 sm:h-80 bg-white relative">
+                <Image 
+                  src="/pro version.jpg" 
+                  alt="Pro Version Interface"
+                  fill
+                  className="object-contain transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
               
               {/* Features Overlay - Animated from bottom */}
               <div className={`absolute inset-0 bg-gradient-to-t from-green-900/95 via-green-800/90 to-green-700/50 transition-all duration-500 transform overflow-y-auto ${
@@ -301,12 +310,12 @@ export const VersionComparisonSection: React.FC = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Start with Free and upgrade anytime</p>
               </div>
             </div>
-           <button 
-  onClick={() => router.push('/signup')}
-  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors whitespace-nowrap"
->
-  Start Free Trial
-</button>
+            <button 
+              onClick={() => router.push('/signup')}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors whitespace-nowrap"
+            >
+              Start Free Trial
+            </button>
           </div>
         </div>
       </div>
