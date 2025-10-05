@@ -1,12 +1,12 @@
-// src/app/login/page.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, Suspense } from "react";
 import AuthForm from "@/components/AuthForm";
 import OAuthButton from "@/components/OAuthButton";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginContent() {
   const search = useSearchParams();
   const verified = search?.get("verified");
   const [info, setInfo] = useState<string | null>(null);
@@ -18,17 +18,12 @@ export default function LoginPage() {
   }, [verified]);
 
   return (
-    // Main container: Sets up the full-screen background and centers the content
     <main
       className="flex min-h-screen w-full items-center justify-center bg-cover bg-center p-4"
       style={{ backgroundImage: "url('/payslip background.jpg')" }}
     >
-      {/* Animated container for the form */}
       <div className="w-full max-w-md animate-fadeInUp space-y-8">
-        
-        {/* Heading with the paint stroke image behind it */}
         <div className="relative flex justify-center">
-          {/* The image is positioned absolutely behind the text */}
           <img
             src="/green_splash.png"
             alt="Green paint stroke"
@@ -40,10 +35,7 @@ export default function LoginPage() {
           </h1>
         </div>
 
-        {/* Form Card: A semi-transparent card for a modern look */}
         <div className="rounded-xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-lg">
-          
-          {/* Styled info message for verified email */}
           {info && (
             <div className="mb-4 rounded-md border border-green-500/30 bg-green-500/20 px-4 py-3 text-center text-sm text-green-300">
               {info}
@@ -60,7 +52,7 @@ export default function LoginPage() {
 
           <OAuthButton provider="google" label="Sign in with Google" />
         </div>
-        
+
         <p className="text-center text-sm text-gray-300">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="font-semibold text-green-400 hover:underline">
@@ -69,5 +61,13 @@ export default function LoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="text-center text-gray-400">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
