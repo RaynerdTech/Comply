@@ -262,7 +262,7 @@ export class PayslipPDFGenerator {
 
   private addPayPeriodInfo(startY: number): number {
     const { doc, data } = this;
-    let y = startY;
+    const y = startY;
     
     doc.setFillColor(248, 250, 252);
     doc.rect(15, y, 180, 20, 'F');
