@@ -28,20 +28,10 @@ export default function CompanySignupPage() {
         return;
       }
 
-      // ✅ Handle both success responses (new company OR already had one)
+      // ✅ Simplified — no need to refetch session
       if (body.success) {
-        // get latest user info from backend
-        const meRes = await fetch("/api/auth/me", { credentials: "include" });
-        const meJson = await meRes.json();
-        const user = meJson?.user;
-
-        if (user?.status === "active" && user?.companyId) {
-          router.replace("/dashboard");
-          return;
-        }
-
-        // fallback message if session hasn’t updated yet
-        alert("Signup completed but session not ready yet. Please reload.");
+        router.replace("/dashboard");
+        return;
       }
     } catch (err) {
       console.error(err);
