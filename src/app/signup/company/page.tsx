@@ -18,6 +18,7 @@ export default function CompanySignupPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companyName }),
         credentials: "include",
+        cache: "no-store",
       });
 
       const body = await res.json();
