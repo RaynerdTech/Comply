@@ -1,50 +1,50 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function CompanyGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
+  const { data: session, status } = useSession();
   const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
+    if (status === "loading") return;
 
-    async function check() {
+    const checkAccess = async () => {
+      if (!session?.user?.email) {
+        router.replace("/login");
+        return;
+      }
+
       try {
-        const res = await fetch("/api/auth/me", { credentials: "include" });
-        const json = await res.json();
-        if (!mounted) return;
-
-        const user = json?.user;
+        // ✅ Always get latest user info from DB
+        const res = await fetch("/api/auth/user");
+        const data = await res.json();
+        const user = data?.user;
 
         if (!user) {
-          router.replace("/msndjdfdjn");
+          router.replace("/login");
           return;
         }
 
-        if (user.status === "pending" || !user.companyId) {
+        // ✅ If no company or still pending, go complete setup
+        if (!user.companyId || user.status === "pending") {
           router.replace("/signup/company");
           return;
         }
 
-        // ✅ User is good
         setAllowed(true);
       } catch (err) {
-        console.error("CompanyGuard error:", err);
+        console.error("Error checking company:", err);
         router.replace("/login");
-      } finally {
-        if (mounted) setChecking(false);
       }
-    }
-
-    check();
-    return () => {
-      mounted = false;
     };
-  }, [router]);
 
-  if (checking) {
+    checkAccess();
+  }, [session, status, router]);
+
+  if (status === "loading" || !allowed) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
         <div className="text-center space-y-4">
@@ -54,8 +54,6 @@ export default function CompanyGuard({ children }: { children: React.ReactNode }
       </div>
     );
   }
-
-  if (!allowed) return null; // we are already redirecting
 
   return <>{children}</>;
 }

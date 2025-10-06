@@ -1,18 +1,22 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Building2, ArrowRight, Loader2 } from "lucide-react";
 
 export default function CompanySignupPage() {
   const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data: session, update } = useSession(); // ✅ access current session
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
 
     try {
+      console.log("🟡 Before update, session:", session);
+
       const res = await fetch("/api/auth/complete-google-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -28,13 +32,16 @@ export default function CompanySignupPage() {
         return;
       }
 
-      // ✅ Simplified — no need to refetch session
       if (body.success) {
+        console.log("✅ Company created successfully, refreshing session...");
+        const newSession = await update(); // 🔄 refresh session
+        console.log("🟢 After update, new session:", newSession);
+
         router.replace("/dashboard");
         return;
       }
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error completing signup:", err);
       alert("Unexpected error, check console.");
     } finally {
       setLoading(false);
@@ -43,13 +50,6 @@ export default function CompanySignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 dark:from-green-900/20 dark:via-emerald-900/20 dark:to-teal-900/20 flex items-center justify-center p-4">
-      {/* Decorative background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-200/30 dark:bg-green-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200/30 dark:bg-emerald-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-200/20 dark:bg-teal-600/10 rounded-full blur-3xl"></div>
-      </div>
-
       <div className="relative w-full max-w-md">
         <div className="bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-green-200/60 dark:border-green-700/60 p-8">
           <div className="text-center mb-8">
@@ -108,28 +108,7 @@ export default function CompanySignupPage() {
               )}
             </button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              By continuing, you agree to our{" "}
-              <a
-                href="/terms"
-                className="text-green-600 dark:text-green-400 hover:underline font-medium"
-              >
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a
-                href="/privacy"
-                className="text-green-600 dark:text-green-400 hover:underline font-medium"
-              >
-                Privacy Policy
-              </a>
-            </p>
-          </div>
         </div>
-
-        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-32 h-2 bg-gradient-to-r from-green-400/30 to-emerald-400/30 rounded-full blur-sm"></div>
       </div>
     </div>
   );
