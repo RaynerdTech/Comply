@@ -8,7 +8,7 @@ export default function CompanySignupPage() {
   const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { data: session, update } = useSession(); // ✅ access current session
+  const { data: session, update } = useSession();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,17 +28,15 @@ export default function CompanySignupPage() {
 
       if (!res.ok) {
         alert(body.error || "Something went wrong");
-        setLoading(false);
         return;
       }
 
       if (body.success) {
         console.log("✅ Company created successfully, refreshing session...");
-        const newSession = await update(); // 🔄 refresh session
+        const newSession = await update(); // 🔄 Refresh NextAuth session
         console.log("🟢 After update, new session:", newSession);
 
         router.replace("/dashboard");
-        return;
       }
     } catch (err) {
       console.error("❌ Error completing signup:", err);

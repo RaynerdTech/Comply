@@ -4,8 +4,6 @@ import Company from "@/models/Company";
 import User from "@/models/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../[...nextauth]/route";
-import { getToken } from "next-auth/jwt";
-import { SignJWT } from "jose";
 
 export async function POST(req: Request) {
   await connectDB();
@@ -42,32 +40,6 @@ export async function POST(req: Request) {
   user.status = "active";
   await user.save();
 
-  // ✅ Refresh JWT manually
-  const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
-  const newJwt = await new SignJWT({
-    ...token,
-    companyId: user.companyId.toString(),
-    status: "active",
-  })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("1h")
-    .sign(new TextEncoder().encode(process.env.NEXTAUTH_SECRET!));
-
-  const res = NextResponse.json({ success: true });
-
-  res.cookies.set(
-    process.env.NODE_ENV === "production"
-      ? "__Secure-next-auth.session-token"
-      : "next-auth.session-token",
-    newJwt,
-    {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      sameSite: "lax",
-    }
-  );
-
-  return res;
+  // ✅ Return success — let client refresh session
+  return NextResponse.json({ success: true });
 }
